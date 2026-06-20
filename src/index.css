@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --canvas: #0B1120;
+    --surface-primary: #151D2E;
+    --surface-secondary: #1E2940;
+    --surface-tertiary: #24304A;
+    --border: #2A3652;
+    --text-primary: #E8ECF1;
+    --text-secondary: #8B9ABF;
+    --text-muted: #5C6B8A;
+    --accent: #3B82F6;
+    --accent-hover: #2563EB;
+    --accent-light: #60A5FA;
+    --accent-lighter: #93C5FD;
+    --accent-dark: #1E40AF;
+    --status-active: #10B981;
+    --status-warning: #F59E0B;
+    --status-danger: #EF4444;
+    --status-info: #3B82F6;
+    --sidebar-bg: #0E1525;
+    --sidebar-active: rgba(59, 130, 246, 0.12);
+    --glow-blue: rgba(59, 130, 246, 0.3);
+    --glow-green: rgba(16, 185, 129, 0.3);
+    --glow-red: rgba(239, 68, 68, 0.3);
+    --font-heading: 'Plus Jakarta Sans', system-ui, sans-serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --radius: 0.85rem;
+    --background: #0B1120;
+    --foreground: #E8ECF1;
+  }
+
+  body {
+    background-color: var(--canvas);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  * {
+    border-color: var(--border);
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0B1120;
+}
+::-webkit-scrollbar-thumb {
+  background: #2A3652;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3B82F6;
+}

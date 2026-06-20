@@ -1,0 +1,186 @@
+<div class="card">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" id="site-docx-tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="sd-devices-tab" data-bs-toggle="tab"
+                        data-bs-target="#sd-devices" type="button" role="tab"
+                        aria-controls="sd-devices" aria-selected="true">
+                    Devices <span class="badge text-bg-secondary">{{ devices|length }}</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="sd-cables-tab" data-bs-toggle="tab"
+                        data-bs-target="#sd-cables" type="button" role="tab"
+                        aria-controls="sd-cables" aria-selected="false">
+                    Cables <span class="badge text-bg-secondary">{{ cables|length }}</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="sd-rack-tab" data-bs-toggle="tab"
+                        data-bs-target="#sd-rack" type="button" role="tab"
+                        aria-controls="sd-rack" aria-selected="false">
+                    Rack Image <span class="badge text-bg-secondary">{{ racks|length }}</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="sd-ips-tab" data-bs-toggle="tab"
+                        data-bs-target="#sd-ips" type="button" role="tab"
+                        aria-controls="sd-ips" aria-selected="false">
+                    IP Addresses <span class="badge text-bg-secondary">{{ ip_addresses|length }}</span>
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <div class="card-body tab-content" id="site-docx-tabs-content">
+
+        {# ---------------- DEVICES TAB ---------------- #}
+        <div class="tab-pane fade show active" id="sd-devices" role="tabpanel" aria-labelledby="sd-devices-tab">
+            {% if devices %}
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Manufacturer / Type</th>
+                            <th>Rack</th>
+                            <th>Position</th>
+                            <th>Serial</th>
+                            <th>Asset Tag</th>
+                            <th>Primary IP</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for device in devices %}
+                        <tr>
+                            <td><a href="{{ device.get_absolute_url }}">{{ device.name|default:"—" }}</a></td>
+                            <td>{{ device.role|default:"—" }}</td>
+                            <td>{{ device.device_type|default:"—" }}</td>
+                            <td>
+                                {% if device.rack %}
+                                    <a href="{{ device.rack.get_absolute_url }}">{{ device.rack }}</a>
+                                {% else %}—{% endif %}
+                            </td>
+                            <td>{{ device.position|default:"—" }}</td>
+                            <td>{{ device.serial|default:"—" }}</td>
+                            <td>{{ device.asset_tag|default:"—" }}</td>
+                            <td>
+                                {% if device.primary_ip %}
+                                    <a href="{{ device.primary_ip.get_absolute_url }}">{{ device.primary_ip }}</a>
+                                {% else %}—{% endif %}
+                            </td>
+                            <td><span class="badge text-bg-secondary">{{ device.get_status_display }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted mb-0">No devices found at this site.</p>
+            {% endif %}
+        </div>
+
+        {# ---------------- CABLES TAB ---------------- #}
+        <div class="tab-pane fade" id="sd-cables" role="tabpanel" aria-labelledby="sd-cables-tab">
+            {% if cables %}
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>Label</th>
+                            <th>Side A</th>
+                            <th>Side B</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Color</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cable in cables %}
+                        <tr>
+                            <td><a href="{{ cable.object.get_absolute_url }}">{{ cable.label }}</a></td>
+                            <td>{{ cable.side_a }}</td>
+                            <td>{{ cable.side_b }}</td>
+                            <td>{{ cable.type }}</td>
+                            <td>{{ cable.status }}</td>
+                            <td>{% if cable.color %}<span class="badge" style="background-color:#{{ cable.color }}">&nbsp;&nbsp;&nbsp;</span> #{{ cable.color }}{% else %}—{% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted mb-0">No cables found between devices at this site.</p>
+            {% endif %}
+        </div>
+
+        {# ---------------- RACK IMAGE TAB ---------------- #}
+        <div class="tab-pane fade" id="sd-rack" role="tabpanel" aria-labelledby="sd-rack-tab">
+            {% if racks %}
+                {% for rack in racks %}
+                <div class="mb-4">
+                    <h5>
+                        <a href="{{ rack.object.get_absolute_url }}">{{ rack.object.name }}</a>
+                        <small class="text-muted">({{ rack.object.u_height }}U)</small>
+                    </h5>
+                    <div class="d-flex flex-wrap gap-4">
+                        <div>
+                            <div class="text-muted small mb-1">Front</div>
+                            <object data="/api/dcim/racks/{{ rack.object.pk }}/elevation/?face=front&render=svg"
+                                    type="image/svg+xml" class="rack_elevation border rounded"></object>
+                        </div>
+                        <div>
+                            <div class="text-muted small mb-1">Rear</div>
+                            <object data="/api/dcim/racks/{{ rack.object.pk }}/elevation/?face=rear&render=svg"
+                                    type="image/svg+xml" class="rack_elevation border rounded"></object>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+            <p class="text-muted mb-0">No racks found at this site.</p>
+            {% endif %}
+        </div>
+
+        {# ---------------- IP ADDRESSES TAB ---------------- #}
+        <div class="tab-pane fade" id="sd-ips" role="tabpanel" aria-labelledby="sd-ips-tab">
+            {% if ip_addresses %}
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>IP Address</th>
+                            <th>Device</th>
+                            <th>Interface</th>
+                            <th>Status</th>
+                            <th>Role</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ip in ip_addresses %}
+                        <tr>
+                            <td><a href="{{ ip.object.get_absolute_url }}">{{ ip.address }}</a></td>
+                            <td>
+                                {% if ip.device %}
+                                    <a href="{{ ip.device.get_absolute_url }}">{{ ip.device }}</a>
+                                {% else %}—{% endif %}
+                            </td>
+                            <td>{{ ip.interface|default:"—" }}</td>
+                            <td>{{ ip.status }}</td>
+                            <td>{{ ip.role }}</td>
+                            <td>{{ ip.description|default:"—" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted mb-0">No IP addresses assigned to devices at this site.</p>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
